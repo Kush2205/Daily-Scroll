@@ -1,6 +1,39 @@
 import React from "react";
-import { Link , NavLink } from "react-router-dom";
+import { Link  } from "react-router-dom";
+import { useState } from "react";
+import authService from "../appwrite/auth";
+import { useNavigate } from "react-router-dom";
 const Signin = () => {
+ 
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const[msg, setMsg] = useState("Loading ...");
+const [isLoading, setIsLoading] = useState(false);
+const navigate = useNavigate();
+async function handleLogin(e) {
+  authService.LogOut();
+  try{
+    setIsLoading(true);
+    e.preventDefault();
+   
+    const user = await authService.Login(email, password);
+    if(user){
+      const data = await authService.getCurrentUser();
+       setIsLoading(false);
+      navigate("/dashboard");
+    }
+    else{
+      document.getElementById("email").style.border = "3px solid red";
+      document.getElementById("password").style.border = "3px solid red";
+     setMsg("Invalid Email or Password");
+    }
+  }
+  catch(e){
+    console.error(e);
+  }
+}
+
+
   return (
     <section className="bg-gray-1 py-20 dark:bg-dark lg:py-[120px]">
       <div className="container mx-auto">
@@ -8,27 +41,40 @@ const Signin = () => {
           <div className="w-full px-4">
             <div className="relative mx-auto max-w-[525px] overflow-hidden rounded-lg bg-white px-10 py-16 text-center dark:bg-dark-2 sm:px-12 md:px-[60px]">
               <div className="mb-10 text-center md:mb-16">
-                <a
-                  href="/#"
-                  className="mx-auto inline-block max-w-[160px]"
-                >
+               
+               
                   <img
                     src="https://cdn.tailgrids.com/2.0/image/assets/images/logo/logo-primary.svg"
                     alt="logo"
                   />
-                </a>
+                
               </div>
               <form>
-                <InputBox type="email" name="email" placeholder="Email" />
-                <InputBox
-                  type="password"
-                  name="password"
-                  placeholder="Password"
-                />
+              <div className="mb-6">
+      <input id="email"
+        placeholder="Email"
+        onChange={(e) => {setEmail(e.target.value);
+        setMsg("Login");
+        
+        }}
+        className="w-full border-2 focus:border-2 rounded-md  border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-blue-600  focus-visible:shadow-none dark:border-dark-3 dark:text-black"
+      />
+    </div>
+    <div className="mb-6">
+      <input id="password"
+      placeholder="Password"
+      onChange={(e) => {setPassword(e.target.value);
+        setMsg("Login");
+      }}
+     
+        className="w-full border-2 focus:border-2 rounded-md  border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-blue-600  focus-visible:shadow-none dark:border-dark-3 dark:text-black"
+      />
+    </div>
                 <div className="mb-10">
                   <input
+                  onClick={handleLogin}
                     type="submit"
-                    value="Sign In"
+                    value={isLoading ? msg : "Login"}
                     className="w-full bg-blue-900 cursor-pointer rounded-md border border-primary bg-primary px-5 py-3 text-base font-medium text-white transition hover:bg-opacity-90"
                   />
                 </div>
@@ -38,10 +84,7 @@ const Signin = () => {
               </p>
               <ul className="-mx-2 mb-12 flex justify-between">
                 <li className="w-full px-2">
-                  <a
-                    href="/#"
-                    className="flex h-11 items-center justify-center rounded-md bg-[#4064AC] hover:bg-opacity-90"
-                  >
+               
                     <svg
                       width="10"
                       height="20"
@@ -54,13 +97,11 @@ const Signin = () => {
                         fill="white"
                       />
                     </svg>
-                  </a>
+                 
                 </li>
                 <li className="w-full px-2">
-                  <a
-                    href="/#"
-                    className="flex h-11 items-center justify-center rounded-md bg-[#1C9CEA] hover:bg-opacity-90"
-                  >
+                 
+                  
                     <svg
                       width="22"
                       height="16"
@@ -73,13 +114,10 @@ const Signin = () => {
                         fill="white"
                       />
                     </svg>
-                  </a>
+                 
                 </li>
                 <li className="w-full px-2">
-                  <a
-                    href="/#"
-                    className="flex h-11 items-center justify-center rounded-md bg-[#D64937] hover:bg-opacity-90"
-                  >
+               
                     <svg
                       width="18"
                       height="18"
@@ -92,24 +130,18 @@ const Signin = () => {
                         fill="white"
                       />
                     </svg>
-                  </a>
+                 
                 </li>
               </ul>
-              <a
-                href="/#"
-                className="mb-2 inline-block text-base text-dark hover:text-primary hover:underline dark:text-white"
-              >
+           
                 Forgot Password?
-              </a>
+            
               <p className="text-base text-body-color dark:text-dark-6">
                 <span className="pr-0.5">Not a member yet?</span>
                 <Link to="/signup">
-                <a
-                  href="/#"
-                  className="text-primary hover:underline"
-                >
+              
                   Sign Up
-                </a>
+                
                 </Link>
                
               </p>
@@ -338,19 +370,9 @@ const Signin = () => {
       </div>
     </section>
   );
+
 };
 
 export default Signin;
 
-const InputBox = ({ type, placeholder, name }) => {
-  return (
-    <div className="mb-6">
-      <input
-        type={type}
-        placeholder={placeholder}
-        name={name}
-        className="w-full border-2 focus:border-2 rounded-md  border-stroke bg-transparent px-5 py-3 text-base text-body-color outline-none focus:border-blue-600  focus-visible:shadow-none dark:border-dark-3 dark:text-black"
-      />
-    </div>
-  );
-};
+
