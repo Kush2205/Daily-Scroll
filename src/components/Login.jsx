@@ -3,13 +3,19 @@ import { Link  } from "react-router-dom";
 import { useState } from "react";
 import authService from "../appwrite/auth";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../store/authSlice";
 const Signin = () => {
  
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const[msg, setMsg] = useState("Loading ...");
 const [isLoading, setIsLoading] = useState(false);
+const dispatch = useDispatch();
 const navigate = useNavigate();
+
+const status = useSelector((state) => state.auth.status);
+console.log(status);
 async function handleLogin(e) {
   authService.LogOut();
   try{
@@ -18,9 +24,15 @@ async function handleLogin(e) {
    
     const user = await authService.Login(email, password);
     if(user){
+     
       const data = await authService.getCurrentUser();
+      dispatch(login(data));
+     
+     
+      console.log(data);
+    
        setIsLoading(false);
-      navigate("/dashboard");
+       navigate("/dashboard");
     }
     else{
       document.getElementById("email").style.border = "3px solid red";
