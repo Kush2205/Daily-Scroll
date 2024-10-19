@@ -13,8 +13,9 @@ function App() {
   if(status){
     return (
       <>
-      <Header />
+     
        <Router>
+       <Header />
         <Routes>
           <Route path="/" element={<Layout />} />
           <Route index element ={<Login />} />

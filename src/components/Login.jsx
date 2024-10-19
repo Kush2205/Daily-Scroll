@@ -1,10 +1,10 @@
 import React from "react";
 import { Link  } from "react-router-dom";
-import { useState } from "react";
+import { useState , useEffect } from "react";
 import authService from "../appwrite/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../store/authSlice";
+import { login, logout } from "../store/authSlice";
 const Signin = () => {
  
 const [email, setEmail] = useState("");
@@ -14,10 +14,16 @@ const [isLoading, setIsLoading] = useState(false);
 const dispatch = useDispatch();
 const navigate = useNavigate();
 
+useEffect(() => {authService.LogOut()
+                 
+
+},[]);
+
+
 const status = useSelector((state) => state.auth.status);
 console.log(status);
 async function handleLogin(e) {
-  authService.LogOut();
+  
   try{
     setIsLoading(true);
     e.preventDefault();
