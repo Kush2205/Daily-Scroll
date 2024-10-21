@@ -7,6 +7,7 @@ import SignupForm from './components/Signup'
 import Layout from './Layout'
 import Dashboard from './components/Dashboard'
 import Header from './components/Header';
+import RTE from './components/RTE';
 function App() {
   const dispatch = useDispatch();
   const status = useSelector((state) => state.auth.status);
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/addpost" element={<RTE />} />
         </Routes>
        </Router>
       </>
@@ -38,6 +40,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
+        
         </Routes>
        </Router>
       </>

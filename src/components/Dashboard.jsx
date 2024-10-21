@@ -1,6 +1,34 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useState } from "react";
+import BlogCard from "./BlogCard";
+import service from "../appwrite/config";
+import { useSelector } from "react-redux";
 const Dashboard = () => {
+  const [title, setTitle] = useState();
+  const [content, setContent] = useState();
+  const [image, setImage] = useState();
+  const [ids, setIds] = useState();
+  let user = useSelector(state => state.auth.userData.$id);
+   console.log(user);
+  
+  async function getPosts() {
+    try {
+      let posts = await service.getPosts();
+      console.log(posts);
+      if (posts) {
+       setTitle(() => posts.documents.map((post) => post.title));
+        setContent(() => posts.documents.map((post) => post.content));
+        setImage(() => posts.documents.map((post) => post.FeaturedImage));
+        setIds(() => posts.documents.map((post) => post.UserId));
+      }
+    } catch (error) {
+      console.log("Appwrite serive :: getPosts :: error", error);
+      return false;
+    }
+  }
+
+  useEffect(() => {getPosts()}, []);  
+
   return (
     <>
       <section className="bg-white pb-10  dark:bg-dark mt-5 overflow-hidden ">
@@ -16,24 +44,22 @@ const Dashboard = () => {
           </div>
 
           <div className="-mx-4 flex flex-wrap">
-            <BlogCard
-              date="Dec 22, 2023"
-              CardTitle="Meet AutoManage, the best AI management tools"
-              CardDescription="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-              image="https://i.ibb.co/Cnwd4q6/image-01.jpg"
-            />
-            <BlogCard
-              date="Dec 22, 2023"
-              CardTitle="Meet AutoManage, the best AI management tools"
-              CardDescription="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-              image="https://i.ibb.co/Y23YC07/image-02.jpg"
-            />
-            <BlogCard
-              date="Dec 22, 2023"
-              CardTitle="Meet AutoManage, the best AI management tools"
-              CardDescription="Lorem Ipsum is simply dummy text of the printing and typesetting industry."
-              image="https://i.ibb.co/7jdcnwn/image-03.jpg"
-            />
+          { 
+          
+          title && title.map((title, index) => {
+            if(ids[index] === user){
+              return (
+                <BlogCard
+                  key={index}
+                  imagesID={image[index]}
+                  CardTitle={title}
+                  CardDescription={content[index]}
+                />
+              );
+            }
+
+          }
+           )}
           </div>
         </div>
       </section>
@@ -42,35 +68,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-const BlogCard = ({ image, date, CardTitle, CardDescription }) => {
-  return (
-    <>
-      <div className="w-full px-4 md:w-1/2 lg:w-1/3">
-        <div className="mb-10 w-full">
-          <div className="mb-8 overflow-hidden rounded">
-            <img src={image} alt="" className="w-full" />
-          </div>
-          <div>
-            {date && (
-              <span className="mb-5 bg-blue-700 inline-block rounded bg-primary px-4 py-1 text-center text-xs font-semibold leading-loose text-white">
-                {date}
-              </span>
-            )}
-            <h3>
-              <a
-                href="/#"
-                className="mb-4 inline-block text-xl font-semibold text-dark hover:text-primary dark:text-black sm:text-2xl lg:text-xl xl:text-2xl"
-              >
-                {CardTitle}
-              </a>
-            </h3>
-            <p className=" text-body-color dark:text-dark-6">
-              {CardDescription}
-            </p>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
