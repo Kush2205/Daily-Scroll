@@ -3,23 +3,28 @@ import { useState } from "react";
 import BlogCard from "./BlogCard";
 import service from "../appwrite/config";
 import { useSelector } from "react-redux";
+import authService from "../appwrite/auth";
 const Dashboard = () => {
   const [title, setTitle] = useState();
   const [content, setContent] = useState();
   const [image, setImage] = useState();
   const [ids, setIds] = useState();
+  const [dates , setDates] = useState();
+ 
   let user = useSelector(state => state.auth.userData.$id);
-   console.log(user);
+ 
   
   async function getPosts() {
     try {
       let posts = await service.getPosts();
-      console.log(posts);
+     
       if (posts) {
        setTitle(() => posts.documents.map((post) => post.title));
         setContent(() => posts.documents.map((post) => post.content));
         setImage(() => posts.documents.map((post) => post.FeaturedImage));
         setIds(() => posts.documents.map((post) => post.UserId));
+        setDates(() => posts.documents.map((post) => post.$createdAt));
+        
       }
     } catch (error) {
       console.log("Appwrite serive :: getPosts :: error", error);
@@ -52,6 +57,7 @@ const Dashboard = () => {
                 <BlogCard
                   key={index}
                   imagesID={image[index]}
+                  date={dates[index]}
                   CardTitle={title}
                   CardDescription={content[index]}
                 />
