@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [ids, setIds] = useState();
   const [dates , setDates] = useState();
   const [postIDs, setPostIDs] = useState();
-  const author =authService.getCurrentUser();
+ 
   
   let user = useSelector(state => state.auth.userData.$id);
  
