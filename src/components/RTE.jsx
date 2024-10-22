@@ -5,13 +5,14 @@ import service from "../appwrite/config.js";
 import { ID } from "appwrite";
 import authService from "../appwrite/auth.js";
 import conf from "../conf/conf.js";
+import { useNavigate } from "react-router";
 export default function App() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [userID, setUserID] = useState("");
   const imageID = ID.unique();
-
+  const navigate = useNavigate();
   async function getUser() {
     try {
       const user = await authService.getCurrentUser();
@@ -23,23 +24,27 @@ export default function App() {
 
   getUser();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     try {
-      service.createPost({
+      await service.createPost({
         title,
         content,
         FeaturedImage: imageID,
         status: "active",
         userID: userID,
       });
+      
     } catch (error) {
       console.log("Appwrite serive :: createPost :: error", error);
     }
 
     try {
-      service.uploadFile(image, imageID);
+     await service.uploadFile(image, imageID);
     } catch (error) {
       console.log("Appwrite serive :: uploadFile :: error", error);
+    }
+    finally{
+      navigate("/dashboard");
     }
   };
 

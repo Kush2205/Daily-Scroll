@@ -29,7 +29,7 @@ const Signin = () => {
   }
 
   async function handleLogin(e) {
-    authService.LogOut();
+   
     try {
       setIsLoading(true);
       e.preventDefault();
