@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import service from '../appwrite/config';
 import { useNavigate } from 'react-router';
 
-const BlogCard = ({ imagesID, date, CardTitle, CardDescription, postID, handleDelete }) => {
+const BlogCard = ({ imagesID, date, CardTitle, CardDescription, postID, handleDelete, author }) => {
   const [image, setImage] = useState(null);
   const upDate = date.split("T")[0];
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const BlogCard = ({ imagesID, date, CardTitle, CardDescription, postID, handleDe
   }, [imagesID]);
 
   const Delete = async () => {
-    await handleDelete(postID);
+    await handleDelete(postID , imagesID);
     navigate('/dashboard');
   };
 
@@ -61,6 +61,16 @@ const BlogCard = ({ imagesID, date, CardTitle, CardDescription, postID, handleDe
               >
                 Delete
               </button>
+            )}
+            {author && (
+              <div>
+                <label>Posted By :</label>
+                  <span className="text-sm bg-green-700 text-white mx-2 px-2 py-2 rounded-2xl">
+                
+                {author}
+              </span>
+              </div>
+            
             )}
            
           </div>

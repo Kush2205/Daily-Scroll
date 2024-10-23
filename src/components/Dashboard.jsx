@@ -16,7 +16,7 @@ const Dashboard = () => {
   async function getPosts() {
     try {
       let posts = await service.getPosts();
-      console.log(posts);
+      
       if (posts) {
         setTitle(posts.documents.map((post) => post.title));
         setContent(posts.documents.map((post) => post.content));
@@ -31,9 +31,10 @@ const Dashboard = () => {
     }
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id , imageID) => {
     try {
       await service.deletePosts(id);
+      await service.deleteFile(imageID)
       getPosts();
     } catch (error) {
       console.log("Appwrite service :: deletePost :: error", error);

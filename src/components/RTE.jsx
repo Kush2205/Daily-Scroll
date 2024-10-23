@@ -11,6 +11,7 @@ export default function App() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [userID, setUserID] = useState("");
+  const[author , setAuthor] = useState("");
   const imageID = ID.unique();
   const navigate = useNavigate();
 
@@ -18,6 +19,10 @@ export default function App() {
     async function getUser() {
       try {
         const user = await authService.getCurrentUser();
+        
+        
+        setAuthor(user.name);
+        
         setUserID(user.$id);
       } catch (error) {
         console.log("Appwrite service :: getCurrentUser :: error", error);
@@ -35,6 +40,7 @@ export default function App() {
         FeaturedImage: imageID,
         status: "active",
         userID: userID,
+        name: author,
       });
     } catch (error) {
       console.log("Appwrite service :: createPost :: error", error);
