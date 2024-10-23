@@ -17,6 +17,7 @@ export default function Header() {
     try {
       await authService.LogOut();
       dispatch(logout());
+      setMenuOpen(!menuOpen)
       navigate("/login");
     } catch (error) {
       console.log("Appwrite service :: logout :: error", error);
@@ -34,14 +35,17 @@ export default function Header() {
 const handlePress = () => {
  
   navigate("/addpost");
+  setMenuOpen(!menuOpen)
 }
 
 const handleAllPosts = () => {
    navigate("/allposts")
+   setMenuOpen(!menuOpen)
 }
 
 const handleMyPosts = () => {
   navigate("/dashboard")
+  setMenuOpen(!menuOpen)
 }
 
 if(status){getCurrentUser();
