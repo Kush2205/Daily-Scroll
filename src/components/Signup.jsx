@@ -15,9 +15,19 @@ const SignupForm = () => {
     setIsLoading(true);
     try {
       const user = await AuthService.createAccount(email, password, name);
-      if (user) {
-        const data = await AuthService.getCurrentUser();
-        navigate("/dashboard");
+      if(user){
+        const login = await AuthService.Login(email , password)
+        if(login){
+          const data = await AuthService.getCurrentUser();
+          console.log(data);
+          if(data){
+            navigate("/login");
+
+        }
+       
+      }
+       
+     
       }
     } catch (e) {
       console.error(e);
