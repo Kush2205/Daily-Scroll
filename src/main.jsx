@@ -10,7 +10,7 @@ import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import Signup from './components/Signup.jsx';
 import RTE from './components/RTE.jsx';
-
+import AllPosts from "./components/AllPosts.jsx"
 const router = createBrowserRouter([
   {
     path: '/',
@@ -36,6 +36,10 @@ const router = createBrowserRouter([
         path: 'signup',
         element: <Signup />,
       },
+      {
+        path: '/allposts' ,
+        element : <AllPosts/>
+      }
     ],
   },
   {

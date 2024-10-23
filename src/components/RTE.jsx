@@ -1,11 +1,11 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import service from "../appwrite/config.js";
 import { ID } from "appwrite";
 import authService from "../appwrite/auth.js";
 import conf from "../conf/conf.js";
 import { useNavigate } from "react-router";
+
 export default function App() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -13,16 +13,19 @@ export default function App() {
   const [userID, setUserID] = useState("");
   const imageID = ID.unique();
   const navigate = useNavigate();
-  async function getUser() {
-    try {
-      const user = await authService.getCurrentUser();
-      setUserID(user.$id);
-    } catch (error) {
-      console.log("Appwrite service :: getCurrentUser :: error", error);
-    }
-  }
 
-  getUser();
+  useEffect(() => {
+    async function getUser() {
+      try {
+        const user = await authService.getCurrentUser();
+        setUserID(user.$id);
+      } catch (error) {
+        console.log("Appwrite service :: getCurrentUser :: error", error);
+      }
+    }
+
+    getUser();
+  }, []);
 
   const handleClick = async () => {
     try {
@@ -33,78 +36,74 @@ export default function App() {
         status: "active",
         userID: userID,
       });
-      
     } catch (error) {
-      console.log("Appwrite serive :: createPost :: error", error);
+      console.log("Appwrite service :: createPost :: error", error);
     }
 
     try {
-     await service.uploadFile(image, imageID);
+      await service.uploadFile(image, imageID);
     } catch (error) {
-      console.log("Appwrite serive :: uploadFile :: error", error);
-    }
-    finally{
+      console.log("Appwrite service :: uploadFile :: error", error);
+    } finally {
       navigate("/dashboard");
     }
   };
 
   return (
-    <>
-      <div className="w-full pt-4 h-screen bg-slate-300">
-        <h1 className="text-5xl italic font-extralight text-center underline-offset-auto">
-          CREATE POST
-        </h1>
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
+      <h1 className="text-4xl font-semibold text-gray-800 mb-8">Create Post</h1>
 
-        <div className="mt-10 flex justify-center">
+      <div className="w-full max-w-4xl bg-white p-8 rounded-lg shadow-lg">
+        <div className="mb-6">
           <input
             onChange={(e) => setTitle(e.target.value)}
-            className="w-3/5 text-lg mx-4 h-10 border-none px-2 rounded-tr-2xl rounded-bl-2xl"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your title here"
-          ></input>
+          />
+        </div>
 
+        <div className="mb-6">
           <input
-            onChange={(e) => {
-              setImage(e.target.files[0]);
-            }}
+            onChange={(e) => setImage(e.target.files[0])}
             type="file"
             accept="image/*"
-            className="w-fit text-lg mx-4 h-10 border-none px-2 rounded-tr-2xl rounded-bl-2xl"
-            placeholder="Enter your title here"
-          ></input>
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
-        <div>
-          <div className="mt-14 mx-4 flex justify-center">
-            <Editor
-              onEditorChange={(content, editor) =>
-                setContent(
-                  editor
-                    .getContent()
-                    .split("<p>")
-                    .join("")
-                    .split("</p>")
-                    .join("")
-                )
-              }
-              apiKey={conf.tinyMCEKey}
-              init={{
-                width: 925,
-                plugins:
-                  "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
-                toolbar:
-                  "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
-              }}
-            />
-          </div>
+
+        <div className="mb-6">
+          <Editor
+            onEditorChange={(content, editor) =>
+              setContent(
+                editor
+                  .getContent()
+                  .split("<p>")
+                  .join("")
+                  .split("</p>")
+                  .join("")
+              )
+            }
+            apiKey={conf.tinyMCEKey}
+            init={{
+              height: 300,
+              menubar: false,
+              plugins:
+                "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
+              toolbar:
+                "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
+            }}
+          />
         </div>
-        <div className="w-full flex justify-center mt-10">
+
+        <div className="flex justify-center">
           <button
             onClick={handleClick}
-            className="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 transition-all text-white text-3xl hover:text-4xl rounded-tr-2xl rounded-bl-xl px-4 py-2"
+            className="bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-all"
           >
-            POST
+            Post
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

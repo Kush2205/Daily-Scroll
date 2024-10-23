@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [dates, setDates] = useState([]);
   const [postIDs, setPostIDs] = useState([]);
 
-  const user = useSelector((state) => state.auth.userData.$id);
+
 
   async function getPosts() {
     try {
@@ -53,7 +53,7 @@ const Dashboard = () => {
         <div className="flex flex-wrap -mx-4">
           {title &&
             title.map((title, index) => {
-              if (ids[index] === user) {
+             
                 return (
                   <BlogCard
                     key={index}
@@ -62,11 +62,11 @@ const Dashboard = () => {
                     CardTitle={title}
                     CardDescription={content[index]}
                     postID={postIDs[index]}
-                    handleDelete={handleDelete}
+                   
                   />
                 );
-              }
-              return null;
+              
+             
             })}
         </div>
       </div>
